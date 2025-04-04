@@ -12,24 +12,26 @@
         android:id="@+id/CategoryTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="Root"
         android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold" />
 
     <SearchView
+        android:id="@+id/CategorySearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
     </SearchView>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/CategoryAddItemButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add Item" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/CategoryList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>
