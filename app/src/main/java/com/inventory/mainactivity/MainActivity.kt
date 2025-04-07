@@ -26,11 +26,6 @@ class MainActivity : ComponentActivity() {
         //setContentView(R.layout.main)
         setContentView(R.layout.main)
 
-        /*findViewById<Button>(R.id.ListButton).setOnClickListener {
-            val toOpenList = Intent(this, ListActivity::class.java)
-            startActivity(toOpenList)
-        }*/
-
         //set up list button
         listButton = setUpListButton(findViewById<Button>(R.id.ListButton))
 

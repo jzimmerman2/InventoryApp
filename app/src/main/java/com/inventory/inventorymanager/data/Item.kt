@@ -9,4 +9,4 @@ data class Item(
     @ColumnInfo(name = "category") val category: String,
     @ColumnInfo(name = "quantity") val quantity: Int,
     @ColumnInfo(name = "isPacked") val isPacked: Boolean = false
-)
+) : InventoryData()

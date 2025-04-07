@@ -11,6 +11,7 @@ import com.inventory.inventorymanager.InventoryManager
 
 import com.inventory.R
 import com.inventory.additemactivity.AddItemActivity
+import com.inventory.additemactivity.FromWhere
 import com.inventory.inventorymanager.data.Item
 
 
@@ -19,7 +20,7 @@ import com.inventory.inventorymanager.data.Item
 //Resources: res/layout/inventory_list_layout
 class ListActivity : ComponentActivity() {
 
-    private lateinit var inventoryManager: InventoryManager
+    private var inventoryManager: InventoryManager = InventoryManager(applicationContext)
     private lateinit var inventoryListAdapter: InventoryListAdapter
     private lateinit var inventoryList : RecyclerView
     private lateinit var searchBar : SearchView
@@ -30,8 +31,6 @@ class ListActivity : ComponentActivity() {
 
         //display inventory_list_layout
         setContentView(R.layout.inventory_list_layout)
-
-        inventoryManager = InventoryManager(applicationContext)
 
         inventoryListAdapter = setUpAdapter(inventoryManager)
         inventoryList = setUpInventoryList(findViewById<RecyclerView>(R.id.InventoryList),
@@ -51,6 +50,8 @@ class ListActivity : ComponentActivity() {
     fun setUpAddItemListButton(addItemListButton: Button) : Button {
         addItemListButton.setOnClickListener {
             val toOpenList = Intent(this, AddItemActivity::class.java)
+            val from: FromWhere = FromWhere.FROMLIST
+            toOpenList.putExtra("from", from)
             startActivity(toOpenList)
         }
         return addItemListButton
@@ -61,7 +62,7 @@ class ListActivity : ComponentActivity() {
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
-                    val results = manager.searchByName(query)
+                    val results = manager.itemsByName(query)
                     inventoryListAdapter.updateItems(results)
                     return true
                 }
@@ -77,13 +78,13 @@ class ListActivity : ComponentActivity() {
     }
 
     fun updateInventoryList(inventoryListAdapter: InventoryListAdapter, manager: InventoryManager) : InventoryListAdapter {
-        val newItems = manager.getAll()
+        val newItems = manager.getAllItems()
         inventoryListAdapter.updateItems(newItems)
         return inventoryListAdapter
     }
 
     fun setUpAdapter(manager: InventoryManager) : InventoryListAdapter {
-        val items = InventoryManager(applicationContext).getAll()
+        val items = manager.getAllItems()
         return InventoryListAdapter(items)
     }
 

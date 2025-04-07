@@ -30,6 +30,12 @@
         android:layout_height="wrap_content"
         android:text="Add Item" />
 
+    <Button
+        android:id="@+id/CategoryAddCategoryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Category" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/CategoryList"
         android:layout_width="match_parent"
