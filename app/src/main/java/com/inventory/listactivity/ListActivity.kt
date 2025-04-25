@@ -77,13 +77,13 @@ class ListActivity : ComponentActivity() {
     }
 
     fun updateInventoryList(inventoryListAdapter: InventoryListAdapter, manager: InventoryManager) : InventoryListAdapter {
-        val newItems = manager.getAll()
+        val newItems = manager.getAllItems()
         inventoryListAdapter.updateItems(newItems)
         return inventoryListAdapter
     }
 
     fun setUpAdapter(manager: InventoryManager) : InventoryListAdapter {
-        val items = InventoryManager(applicationContext).getAll()
+        val items = InventoryManager(applicationContext).getAllItems()
         return InventoryListAdapter(items)
     }
 
