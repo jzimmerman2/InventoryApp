@@ -106,9 +106,9 @@ class DirectoryListAdapter (private var inventoryItems: List<InventoryData>,
     }
 
     fun addSuperDir(categoryList: List<InventoryData>, currentDirectory: String) : List<InventoryData> {
-        if (currentDirectory == "/" || categoryList.any { it is SuperDirectory }) return categoryList
+        if (currentDirectory == "/" || categoryList.any { it is SuperCategory }) return categoryList
 
-        val superDir: List<InventoryData> = listOf(SuperDirectory())
+        val superDir: List<InventoryData> = listOf(SuperCategory())
         return superDir + categoryList
     }
 
@@ -148,7 +148,7 @@ class DirectoryListAdapter (private var inventoryItems: List<InventoryData>,
         }
     }
 
-    internal inner class SuperDirectory(private val name: String = "..") : InventoryData() {
+    internal inner class SuperCategory(private val name: String = "..") : InventoryData() {
         fun getName() : String {
             return name
         }

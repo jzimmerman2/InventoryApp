@@ -123,7 +123,7 @@ class InventoryManager(context: Context) {
         val items = dataAccess.searchItemsByCategoryNonRecursive(curDir)
         val categories = dataAccess.getSubCategories(curDir)
 
-        return categories + items
+        return categories + items as List<InventoryData>
     }
 }
 

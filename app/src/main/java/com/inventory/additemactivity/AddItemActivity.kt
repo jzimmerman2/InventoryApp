@@ -40,16 +40,6 @@ class AddItemActivity : ComponentActivity() {
             val strCategory = category.text.toString()
             val strQuantity = quantity.text.toString()
 
-            //category check
-            if (manager.getCategoryByName(strCategory).isEmpty()) {
-                var parent : String = "/"
-                if (strCategory.contains("/")) {
-                    val parentTrial = strCategory.substringBeforeLast("/")
-                    if (parentTrial != "") parent = parentTrial
-                }
-                manager.insertCategory(Category(strCategory, parent))
-            }
-
             if (strName != "" &&
                 strCategory != ""  &&
                 strQuantity != "") {
