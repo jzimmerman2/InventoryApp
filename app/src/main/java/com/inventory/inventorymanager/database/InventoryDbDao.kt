@@ -45,8 +45,14 @@ interface InventoryDbDao {
     fun getSubCategories(rootOfSearch: String): List<Category>
 
     @Query("SELECT * FROM categories WHERE name IN (SELECT parent FROM categories WHERE name = :category)")
-    fun getParent(category: String) : Category
+    fun getParent(category: String) : List<Category>
+
+    @Query("SELECT * FROM categories WHERE name = :category")
+    fun getCategoryByName(category: String) : List<Category>
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insertCategory(category: Category)
+
+    @Delete
+    fun deleteCategory(category: Category)
 }

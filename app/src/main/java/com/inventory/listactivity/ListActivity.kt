@@ -83,7 +83,7 @@ class ListActivity : ComponentActivity() {
     }
 
     fun setUpAdapter(manager: InventoryManager) : InventoryListAdapter {
-        val items = InventoryManager(applicationContext).getAllItems()
+        val items = manager.getAllItems()
         return InventoryListAdapter(items)
     }
 

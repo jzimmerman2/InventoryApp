@@ -47,11 +47,10 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-    implementation("androidx.room:room-rxjava2:2.6.1")
-    implementation("androidx.room:room-rxjava3:2.6.1")
+    //implementation("androidx.room:room-rxjava2:2.6.1")
+    //implementation("androidx.room:room-rxjava3:2.6.1")
 
     implementation("androidx.viewpager2:viewpager2:1.1.0")
-    implementation("androidx.fragment:fragment:1.8.6")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

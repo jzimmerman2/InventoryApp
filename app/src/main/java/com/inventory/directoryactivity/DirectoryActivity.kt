@@ -21,10 +21,10 @@ import java.util.concurrent.RecursiveTask
 
 class DirectoryActivity : ComponentActivity() {
 
-    private val inventoryManager: InventoryManager = InventoryManager(applicationContext)
+    private lateinit var inventoryManager: InventoryManager
     private lateinit var inventoryListAdapter: DirectoryListAdapter
     private lateinit var inventoryList: RecyclerView
-    private val currentDirectory: CurrentDirectory = CurrentDirectory()
+    private lateinit var currentDirectory: CurrentDirectory
 
     private lateinit var addItemButton: Button
     private lateinit var addCatButton: Button
@@ -34,6 +34,8 @@ class DirectoryActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.inventory_directory_layout)
 
+        inventoryManager = InventoryManager(applicationContext)
+        currentDirectory = CurrentDirectory()
         inventoryListAdapter = setUpAdapter(inventoryManager)
         inventoryList = setUpInventoryList(findViewById<RecyclerView>(R.id.CategoryList), inventoryListAdapter)
         addItemButton = setUpAddItemButton(findViewById<Button>(R.id.CategoryAddItemButton))

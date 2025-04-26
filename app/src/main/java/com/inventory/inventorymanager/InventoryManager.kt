@@ -10,6 +10,7 @@ import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.inventory.inventorymanager.data.Category
+import com.inventory.inventorymanager.data.InventoryData
 import com.inventory.inventorymanager.data.Item
 import com.inventory.inventorymanager.database.InventoryDb
 import com.inventory.inventorymanager.database.InventoryDbDao
@@ -47,7 +48,7 @@ class InventoryManager(context: Context) {
         dataAccess.insertItem(item)
     }
 
-    fun insertAllItems(items: List<Item>) {
+    fun insertItems(items: List<Item>) {
         for (item in items) dataAccess.insertItem(item)
     }
 
@@ -55,14 +56,19 @@ class InventoryManager(context: Context) {
         dataAccess.deleteItem(item)
     }
 
-    fun deleteAllItems(items: List<Item>) {
+    fun deleteItems(items: List<Item>) {
         for (item in items) dataAccess.deleteItem(item)
     }
 
-    fun replaceAllItems(newItems: List<Item>) {
+    fun DELETEALLITEMS() {
+        val items = dataAccess.getAllItems()
+        deleteItems(items)
+    }
+
+    fun replaceItems(newItems: List<Item>) {
         val oldItems = dataAccess.getAllItems()
-        deleteAllItems(oldItems)
-        insertAllItems(newItems)
+        deleteItems(oldItems)
+        insertItems(newItems)
     }
 
     //-----------CATEGORIES-----------------
@@ -87,12 +93,37 @@ class InventoryManager(context: Context) {
         return subCategories
     }
 
-    fun getCategoryParent(category: String) : Category {
+    fun getCategoryParent(category: String) : List<Category> {
         return dataAccess.getParent(category)
+    }
+
+    fun getCategoryByName(category: String) : List<Category> {
+        return dataAccess.getCategoryByName(category)
     }
 
     fun insertCategory(category: Category) {
         dataAccess.insertCategory(category)
+    }
+
+    fun deleteCategory(category: Category) {
+        dataAccess.deleteCategory(category)
+    }
+
+    fun deleteCategories(categories: List<Category>) {
+        for (category in categories) dataAccess.deleteCategory(category)
+    }
+
+    fun DELETEALLCATEGORIES() {
+        val categories = dataAccess.getAllCategories()
+        deleteCategories(categories)
+    }
+
+    //--------------CATEGORIES AND ITEMS---------------
+    fun getEverythingInCategory(curDir: String) : List<InventoryData> {
+        val items = dataAccess.searchItemsByCategoryNonRecursive(curDir)
+        val categories = dataAccess.getSubCategories(curDir)
+
+        return categories + items
     }
 }
 

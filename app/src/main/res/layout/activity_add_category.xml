@@ -6,38 +6,31 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".directoryactivity.DirectoryActivity">
+    tools:context=".AddCategoryActivity">
 
     <TextView
-        android:id="@+id/CategoryTitle"
+        android:id="@+id/AddCategoryTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Category View"
+        android:layout_weight="1"
+        android:text="Add Category"
         android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold" />
 
-    <SearchView
-        android:id="@+id/CategorySearch"
+    <EditText
+        android:id="@+id/AddCategoryEntry"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </SearchView>
-
-    <Button
-        android:id="@+id/CategoryAddItemButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Item" />
+        android:layout_height="59dp"
+        android:layout_weight="1"
+        android:ems="10"
+        android:inputType="text" />
 
     <Button
-        android:id="@+id/CategoryAddCategoryButton"
+        android:id="@+id/ActivityAddCategoryButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="87dp"
+        android:layout_weight="1"
         android:text="Add Category" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/CategoryList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 </LinearLayout>

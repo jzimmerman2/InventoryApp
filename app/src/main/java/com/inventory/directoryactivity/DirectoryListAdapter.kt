@@ -36,6 +36,10 @@ class DirectoryListAdapter (private var inventoryItems: List<InventoryData>,
         }
     }
 
+    override fun getItemCount(): Int {
+        return inventoryItems.size
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_ITEM -> {
@@ -64,15 +68,13 @@ class DirectoryListAdapter (private var inventoryItems: List<InventoryData>,
             holder.isPacked.isChecked = inventoryItem.isPacked
         }
         if (holder is CategoryViewHolder && inventoryItem is Category) {
-            holder.categoryName.text = inventoryItem.name
-            holder.categoryImage.setImageResource(R.drawable.code_64x64)
+            holder.categoryName.text = inventoryItem.getShortName()
+            holder.categoryImage.setImageResource(R.drawable.folder)
         }
         if (holder is SuperCategoryViewHolder && inventoryItem is SuperCategory) {
+            holder.name.text = ".."
+            holder.image.setImageResource(R.drawable.folder)
         }
-    }
-
-    fun getitemCount(): Int {
-        return inventoryItems.size
     }
 
     fun updateList(updatedData: List<InventoryData>) {
@@ -136,12 +138,12 @@ class DirectoryListAdapter (private var inventoryItems: List<InventoryData>,
     internal inner class CategoryViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
 
-        val directoryImage: ImageView = itemView.findViewById(R.id.CategoryImage)
-        val directoryName: TextView = itemView.findViewById(R.id.CategoryName)
+        val categoryImage: ImageView = itemView.findViewById(R.id.CategoryImage)
+        val categoryName: TextView = itemView.findViewById(R.id.CategoryName)
 
         init {
-            directoryImage.setOnClickListener {
-                goToDir(directoryName.text.toString())
+            categoryImage.setOnClickListener {
+                goToDir(categoryName.text.toString())
             }
         }
     }
@@ -152,15 +154,15 @@ class DirectoryListAdapter (private var inventoryItems: List<InventoryData>,
         }
     }
 
-    internal inner class SuperDirectoryViewHolder(view: View) :
+    internal inner class SuperCategoryViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
 
         val image : ImageView = itemView.findViewById(R.id.CategoryImage)
         val name : TextView = itemView.findViewById(R.id.CategoryName)
 
         init {
-            categoryImage.setOnClickListener {
-                goToDir(owner.inventory)
+            image.setOnClickListener {
+                goToDir("..")
             }
         }
     }

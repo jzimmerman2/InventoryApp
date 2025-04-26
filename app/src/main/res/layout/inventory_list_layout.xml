@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/inventory_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
@@ -13,25 +13,21 @@
         android:text="List View"
         android:textAlignment="center"
         android:textSize="34sp"
-        android:textStyle="bold"
-        android:translationY="20dp"/>
+        android:textStyle="bold" />
 
     <SearchView
         android:id="@+id/SearchBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:translationY="20dp"/>
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/AddItemListButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Item"
-        android:translationY="20dp" />
+        android:text="Add Item" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/InventoryList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:translationY="20dp" />
+        android:layout_height="wrap_content" />
 </LinearLayout>

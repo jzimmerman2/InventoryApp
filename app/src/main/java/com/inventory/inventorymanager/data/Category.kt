@@ -7,4 +7,9 @@ import androidx.room.Entity
 data class Category(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "parent") val parent: String
-) : InventoryData()
+) : InventoryData() {
+
+    fun getShortName() : String {
+        return name.substringAfterLast("/")
+    }
+}
