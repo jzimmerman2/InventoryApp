@@ -6,7 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inventory.R
 import com.inventory.inventorymanager.InventoryManager
@@ -140,10 +143,16 @@ class DirectoryListAdapter (private var inventoryItems: List<InventoryData>,
 
         val categoryImage: ImageView = itemView.findViewById(R.id.CategoryImage)
         val categoryName: TextView = itemView.findViewById(R.id.CategoryName)
+        val categoryView: LinearLayout = itemView.findViewById<LinearLayout>(R.id.CategoryListItem)
 
         init {
             categoryImage.setOnClickListener {
                 goToDir(categoryName.text.toString())
+
+            categoryView.setOnLongClickListener(View.OnLongClickListener() {
+                Toast.makeText(view.context.applicationContext, "long click works", Toast.LENGTH_SHORT).show()
+                true
+            })
             }
         }
     }

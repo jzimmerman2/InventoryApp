@@ -6,6 +6,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.inventory.R
+import com.inventory.additemactivity.FromWhere
 import com.inventory.inventorymanager.InventoryManager
 import com.inventory.inventorymanager.data.Category
 
@@ -16,9 +17,14 @@ class AddCategoryActivity : ComponentActivity() {
     private lateinit var addCatButton: Button
 
     private lateinit var currentDirectory: String
+    private lateinit var fromWhere: FromWhere
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        fromWhere = tryRetrieveFromWhere()
+        currentDirectory = tryRetrieveCurrentDirectory()
+
 
         setContentView(R.layout.activity_add_category)
 
@@ -26,10 +32,7 @@ class AddCategoryActivity : ComponentActivity() {
 
         categoryNameEntry = findViewById<EditText>(R.id.AddCategoryEntry)
 
-        currentDirectory = tryRetrieveCurrentDirectory()
-
-        addCatButton = setUpAddCatButton(findViewById<Button>(R.id.ActivityAddCategoryButton), categoryNameEntry,
-            currentDirectory, inventoryManager)
+        addCatButton = setUpAddCatButton(findViewById<Button>(R.id.ActivityAddCategoryButton), categoryNameEntry, currentDirectory, inventoryManager)
     }
 
     fun setUpAddCatButton(addCatButton: Button, nameEntry: EditText, currentDirectory: String, manager: InventoryManager) : Button {
@@ -72,6 +75,29 @@ class AddCategoryActivity : ComponentActivity() {
 
     fun failedRetrieveCurrentDirectory() {
         Toast.makeText(applicationContext, "Can't retrieve current directory, exiting activity", Toast.LENGTH_SHORT).show()
+        finish()
+    }
+
+    fun tryRetrieveFromWhere() : FromWhere {
+        try {
+            val from = intent.getStringExtra("from")!!
+
+            if (from == "directory_activity") {
+                return FromWhere.FROMDIRECTORY
+            }
+            else if (from == "list_activity") {
+                return FromWhere.FROMLIST
+            }
+        }
+        catch (e: Exception) {
+            failedRetrieveFrom()
+        }
+        //never make it here
+        return FromWhere.FROMLIST
+    }
+
+    fun failedRetrieveFrom() {
+        Toast.makeText(applicationContext, "Can't get from where, exiting activity", Toast.LENGTH_SHORT).show()
         finish()
     }
 }

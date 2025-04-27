@@ -73,6 +73,7 @@ class DirectoryActivity : ComponentActivity() {
         addCatButton.setOnClickListener {
             val toOpen = Intent(this, AddCategoryActivity::class.java)
             toOpen.putExtra("current directory", currentDirectory.pathToString())
+            toOpen.putExtra("from", "directory_activity")
             startActivity(toOpen)
         }
         return addCatButton

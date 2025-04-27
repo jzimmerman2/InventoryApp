@@ -2,7 +2,9 @@ package com.inventory.mainactivity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import com.inventory.directoryactivity.DirectoryActivity
@@ -55,6 +57,10 @@ class MainActivity : ComponentActivity() {
             val toOpenDirectory = Intent(this, DirectoryActivity::class.java)
             startActivity(toOpenDirectory)
         }
+        directoryButton.setOnLongClickListener(View.OnLongClickListener() {
+            Toast.makeText(applicationContext, "long click works", Toast.LENGTH_SHORT).show()
+            true
+        })
         return directoryButton
     }
 

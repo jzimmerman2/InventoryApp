@@ -3,6 +3,7 @@ package com.inventory.additemactivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import com.inventory.R
@@ -17,6 +18,7 @@ class AddItemActivity : ComponentActivity() {
     private lateinit var categoryEntry : EditText
     private lateinit var quantityEntry : EditText
     private lateinit var addItemButton: Button
+    private lateinit var fromWhere: FromWhere
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,5 +50,21 @@ class AddItemActivity : ComponentActivity() {
             }
         }
         return addItemButton
+    }
+
+    fun tryRetrieveCurrentDirectory() : String {
+        try {
+            return intent.getStringExtra("current directory")!!
+        }
+        catch (e: Exception) {
+            failedRetrieveCurrentDirectory()
+        }
+        //never make it here
+        return ""
+    }
+
+    fun failedRetrieveCurrentDirectory() {
+        Toast.makeText(applicationContext, "Can't retrieve current directory, exiting activity", Toast.LENGTH_SHORT).show()
+        finish()
     }
 }
