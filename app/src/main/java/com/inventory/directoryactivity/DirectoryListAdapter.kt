@@ -2,13 +2,16 @@ package com.inventory.directoryactivity
 
 import android.animation.LayoutTransition
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inventory.R
@@ -128,11 +131,40 @@ class DirectoryListAdapter (private var inventoryItems: List<InventoryData>,
         val itemCategory: TextView = itemView.findViewById(R.id.ItemCategory)
         val itemQuantity: TextView = itemView.findViewById(R.id.ItemQuantity)
         val isPacked: CheckBox = itemView.findViewById<CheckBox>(R.id.isPackedBox)
-        val divider: View = itemView.findViewById(R.id.ItemDivider)
+        val itemLayout: LinearLayout = itemView.findViewById<LinearLayout>(R.id.ItemLayout)
+
         init {
             isPacked.setOnClickListener {
                 InventoryManager(itemView.context.applicationContext)
                     .flipIsPacked(itemName.text.toString(), itemCategory.text.toString())
+            }
+
+            itemLayout.setOnLongClickListener {
+                val popup = PopupMenu(itemLayout.context, itemLayout)
+
+                popup.apply {
+                    menuInflater.inflate(R.menu.item_menu, menu)
+                }
+
+
+                popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
+                    item ->
+                    when (item.itemId) {
+                        R.id.ItemCut -> {
+                            owner.setSavedItem(Item(itemName.text.toString(), itemCategory.text.toString(), itemQuantity.text.toString().toInt()))
+                            true
+                        }
+                        R.id.ItemDelete -> {
+                            owner.deleteItem(Item(itemName.text.toString(), itemCategory.text.toString(), itemQuantity.text.toString().toInt()))
+                            owner.getCurrentDir()
+                            true
+                        }
+                        else -> false
+                    }
+                })
+
+                popup.show()
+                true
             }
         }
 

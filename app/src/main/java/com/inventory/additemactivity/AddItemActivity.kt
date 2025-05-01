@@ -1,8 +1,16 @@
 package com.inventory.additemactivity
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextUtils
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.MultiAutoCompleteTextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
@@ -15,37 +23,49 @@ class AddItemActivity : ComponentActivity() {
 
     private lateinit var inventoryManager: InventoryManager
     private lateinit var nameEntry : EditText
-    private lateinit var categoryEntry : EditText
     private lateinit var quantityEntry : EditText
     private lateinit var addItemButton: Button
     private lateinit var fromWhere: FromWhere
+    private lateinit var currentDirectory: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_add_item)
 
+        fromWhere = when (intent.getStringExtra("from")) {
+            "list activity" -> FromWhere.FROMLIST
+            "directory activity" -> FromWhere.FROMDIRECTORY
+            else -> FromWhere.FROMLIST
+        }
+        currentDirectory = intent.getStringExtra("current directory")!!
+
         inventoryManager = InventoryManager(applicationContext)
         nameEntry = findViewById<EditText>(R.id.AddItemNameEntry)
-        categoryEntry = findViewById<EditText>(R.id.AddItemCategoryEntry)
         quantityEntry = findViewById<EditText>(R.id.AddItemQuantityEntry)
         addItemButton = findViewById<Button>(R.id.AddItemButton)
 
-        addItemButton = setUpAddItemButton(addItemButton, nameEntry, categoryEntry, quantityEntry, inventoryManager)
+        addItemButton = setUpAddItemButton(
+            addItemButton,
+            nameEntry,
+            currentDirectory,
+            quantityEntry,
+            inventoryManager
+        )
     }
 
-    fun setUpAddItemButton(addItemButton: Button, name: EditText, category: EditText, quantity: EditText, manager : InventoryManager) :
+
+
+    fun setUpAddItemButton(addItemButton: Button, name: EditText, currentDirectory: String, quantity: EditText, manager : InventoryManager) :
         Button {
 
         addItemButton.setOnClickListener {
             val strName = name.text.toString()
-            val strCategory = category.text.toString()
             val strQuantity = quantity.text.toString()
 
             if (strName != "" &&
-                strCategory != ""  &&
                 strQuantity != "") {
-                val newItem = Item(strName, strCategory, strQuantity.toInt())
+                val newItem = Item(strName, currentDirectory, strQuantity.toInt())
                 manager.insertItem(newItem)
             }
         }

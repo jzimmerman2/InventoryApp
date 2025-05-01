@@ -44,24 +44,7 @@ class AddCategoryActivity : ComponentActivity() {
         }
         return addCatButton
     }
-/*
-    fun categoryPathStrToList(category: String) : List<String> {
-        category.dropWhile { it == '/' }
-        category.dropLastWhile { it == '/' }
-        return category.split('/')
-    }
 
-    fun categoryPathListToStr(category: List<String>) : String {
-        if (category.isEmpty()) return "/"
-
-        var strCategory: String = ""
-        for (cat in category) {
-            strCategory += "/"
-            strCategory += cat
-        }
-        return strCategory
-    }
-*/
     fun tryRetrieveCurrentDirectory() : String {
         try {
             return intent.getStringExtra("current directory")!!

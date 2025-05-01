@@ -29,9 +29,10 @@ class DirectoryActivity : ComponentActivity() {
     private lateinit var addItemButton: Button
     private lateinit var addCatButton: Button
 
+    private lateinit var savedItem: Item
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.inventory_directory_layout)
 
         inventoryManager = InventoryManager(applicationContext)
@@ -40,6 +41,19 @@ class DirectoryActivity : ComponentActivity() {
         inventoryList = setUpInventoryList(findViewById<RecyclerView>(R.id.CategoryList), inventoryListAdapter)
         addItemButton = setUpAddItemButton(findViewById<Button>(R.id.CategoryAddItemButton))
         addCatButton = setUpAddCategoryButton(findViewById<Button>(R.id.CategoryAddCategoryButton))
+    }
+
+    fun deleteItem(item: Item) {
+        inventoryManager.deleteItem(item)
+        updateList(inventoryListAdapter)
+    }
+
+    fun setSavedItem(item: Item) {
+        savedItem = item
+    }
+
+    fun getSavedItem() : Item {
+        return savedItem
     }
 
     fun setUpAdapter(manager: InventoryManager) : DirectoryListAdapter{

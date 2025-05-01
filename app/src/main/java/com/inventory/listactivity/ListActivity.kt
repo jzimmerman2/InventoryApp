@@ -51,6 +51,8 @@ class ListActivity : ComponentActivity() {
     fun setUpAddItemListButton(addItemListButton: Button) : Button {
         addItemListButton.setOnClickListener {
             val toOpenList = Intent(this, AddItemActivity::class.java)
+            toOpenList.putExtra("from", "list activity")
+            toOpenList.putExtra("current directory", "/")
             startActivity(toOpenList)
         }
         return addItemListButton

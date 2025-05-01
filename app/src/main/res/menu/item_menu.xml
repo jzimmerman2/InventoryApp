@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/ItemMenu1"
-        android:title="Item 1"
+        android:id="@+id/ItemCut"
+        android:title="Cut"
         android:visible="true" />
     <item
-        android:id="@+id/ItemMenu2"
-        android:title="Item 2"
+        android:id="@+id/ItemDelete"
+        android:title="Delete"
         android:visible="true" />
 </menu>

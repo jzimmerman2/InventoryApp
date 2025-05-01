@@ -59,20 +59,9 @@ class MainActivity : ComponentActivity() {
 
     fun setUpDirectoryButton(directoryButton: Button) : Button {
         directoryButton.setOnClickListener {
-            //val toOpenDirectory = Intent(this, DirectoryActivity::class.java)
-            //startActivity(toOpenDirectory)
-            val popup = PopupMenu(this, directoryButton)
-
-            popup.apply {
-                menuInflater.inflate(R.menu.popup_menu, menu)
-            }
-
-            popup.show()
+            val toOpenDirectory = Intent(this, DirectoryActivity::class.java)
+            startActivity(toOpenDirectory)
         }
-        /*directoryButton.setOnLongClickListener(View.OnLongClickListener() {
-            Toast.makeText(applicationContext, "long click works", Toast.LENGTH_SHORT).show()
-            true
-        })*/
         return directoryButton
     }
 
