@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".AddCategoryActivity">
+
+    <TextView
+        android:id="@+id/AddCategoryTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Add Category"
+        android:textAlignment="center"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/AddCategoryEntry"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:layout_weight="1"
+        android:ems="10"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/ActivityAddCategoryButton"
+        android:layout_width="match_parent"
+        android:layout_height="87dp"
+        android:layout_weight="1"
+        android:text="Add Category" />
+
+</LinearLayout>

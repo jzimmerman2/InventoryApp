@@ -51,6 +51,8 @@ class ListActivity : ComponentActivity() {
     fun setUpAddItemListButton(addItemListButton: Button) : Button {
         addItemListButton.setOnClickListener {
             val toOpenList = Intent(this, AddItemActivity::class.java)
+            toOpenList.putExtra("from", "list activity")
+            toOpenList.putExtra("current directory", "/")
             startActivity(toOpenList)
         }
         return addItemListButton
@@ -77,13 +79,13 @@ class ListActivity : ComponentActivity() {
     }
 
     fun updateInventoryList(inventoryListAdapter: InventoryListAdapter, manager: InventoryManager) : InventoryListAdapter {
-        val newItems = manager.getAll()
+        val newItems = manager.getAllItems()
         inventoryListAdapter.updateItems(newItems)
         return inventoryListAdapter
     }
 
     fun setUpAdapter(manager: InventoryManager) : InventoryListAdapter {
-        val items = InventoryManager(applicationContext).getAll()
+        val items = manager.getAllItems()
         return InventoryListAdapter(items)
     }
 
