@@ -39,7 +39,7 @@ class AddCategoryActivity : ComponentActivity() {
         addCatButton.setOnClickListener {
             val categoryShortName = nameEntry.text.toString()
             val parent = currentDirectory
-            val categoryFullName = "$currentDirectory/$categoryShortName"
+            val categoryFullName = if (parent == "/") "/$categoryShortName" else "$currentDirectory/$categoryShortName"
             manager.insertCategory(Category(categoryFullName, parent))
         }
         return addCatButton

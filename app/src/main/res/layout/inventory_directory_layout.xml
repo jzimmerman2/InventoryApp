@@ -36,6 +36,14 @@
         android:layout_height="wrap_content"
         android:text="Add Category" />
 
+    <TextView
+        android:id="@+id/CategoryText"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:clickable="true"
+        android:longClickable="true"
+        android:text="TextView" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/CategoryList"
         android:layout_width="match_parent"

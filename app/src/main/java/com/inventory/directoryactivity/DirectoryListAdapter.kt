@@ -151,12 +151,11 @@ class DirectoryListAdapter (private var inventoryItems: List<InventoryData>,
                     item ->
                     when (item.itemId) {
                         R.id.ItemCut -> {
-                            owner.setSavedItem(Item(itemName.text.toString(), itemCategory.text.toString(), itemQuantity.text.toString().toInt()))
+                            owner.setCutData(Item(itemName.text.toString(), itemCategory.text.toString(), itemQuantity.text.toString().toInt()))
                             true
                         }
                         R.id.ItemDelete -> {
-                            owner.deleteItem(Item(itemName.text.toString(), itemCategory.text.toString(), itemQuantity.text.toString().toInt()))
-                            owner.getCurrentDir()
+                            owner.deleteData(Item(itemName.text.toString(), itemCategory.text.toString(), itemQuantity.text.toString().toInt()))
                             true
                         }
                         else -> false
@@ -175,19 +174,44 @@ class DirectoryListAdapter (private var inventoryItems: List<InventoryData>,
 
         val categoryImage: ImageView = itemView.findViewById(R.id.CategoryImage)
         val categoryName: TextView = itemView.findViewById(R.id.CategoryName)
-        val categoryView: LinearLayout = itemView.findViewById<LinearLayout>(R.id.CategoryListItem)
+        val categoryLayout: LinearLayout = itemView.findViewById<LinearLayout>(R.id.CategoryListItem)
 
         init {
             categoryImage.setOnClickListener {
                 goToDir(categoryName.text.toString())
+            }
 
-            categoryView.setOnLongClickListener(View.OnLongClickListener() {
-                Toast.makeText(view.context.applicationContext, "long click works", Toast.LENGTH_SHORT).show()
+            categoryLayout.setOnLongClickListener {
+                val popup = PopupMenu(categoryLayout.context, categoryLayout)
+
+                popup.apply {
+                    menuInflater.inflate(R.menu.category_menu, menu)
+                }
+
+
+                popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
+                        item ->
+                    when (item.itemId) {
+                        R.id.CategoryCut -> {
+                            owner.setCutData(Category(owner.getCurrentDir() + categoryName.text.toString(), owner.getCurrentDir()))
+                            true
+                        }
+                        R.id.CategoryDelete -> {
+                            val parent = owner.getCurrentDir()
+                            val name = categoryName.text.toString()
+                            owner.deleteData(Category("$parent/$name", parent))
+                            true
+                        }
+                        else -> false
+                    }
+                })
+
+                popup.show()
                 true
-            })
+            }
             }
         }
-    }
+
 
     internal inner class SuperCategory(private val name: String = "..") : InventoryData() {
         fun getName() : String {

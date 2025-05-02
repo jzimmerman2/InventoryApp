@@ -32,8 +32,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         //display main layout
-        //setContentView(R.layout.main)
         setContentView(R.layout.main)
+        //setContentView(R.layout.inventory_directory_layout)
 
         /*findViewById<Button>(R.id.ListButton).setOnClickListener {
             val toOpenList = Intent(this, ListActivity::class.java)
