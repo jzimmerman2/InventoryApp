@@ -23,6 +23,9 @@ interface InventoryDbDao {
     @Query("SELECT * FROM items WHERE name LIKE :name")
     fun searchItemsByName(name: String): List<Item>
 
+    @Query("SELECT * FROM items WHERE category = :category AND name LIKE :name")
+    fun searchItemsByNameInCategory(name : String, category: String) : List<Item>
+
     @Query("UPDATE items " +
             "SET isPacked = NOT isPacked " +
             "WHERE name = :name AND category = :category")
@@ -55,4 +58,7 @@ interface InventoryDbDao {
 
     @Delete
     fun deleteCategory(category: Category)
+
+    @Query("SELECT * FROM categories WHERE parent = :category AND name LIKE :name")
+    fun searchCategoriesByNameInCategory(name : String, category: String) : List<Category>
 }
