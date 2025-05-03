@@ -155,7 +155,8 @@ class DirectoryListAdapter (private var inventoryItems: List<InventoryData>,
                             true
                         }
                         R.id.ItemDelete -> {
-                            owner.deleteData(Item(itemName.text.toString(), itemCategory.text.toString(), itemQuantity.text.toString().toInt()))
+                            owner.getManager().deleteItem(Item(itemName.text.toString(), itemCategory.text.toString(), itemQuantity.text.toString().toInt()))
+                            owner.updateList()
                             true
                         }
                         else -> false
@@ -199,7 +200,8 @@ class DirectoryListAdapter (private var inventoryItems: List<InventoryData>,
                         R.id.CategoryDelete -> {
                             val parent = owner.getCurrentDir()
                             val name = categoryName.text.toString()
-                            owner.deleteData(Category("$parent/$name", parent))
+                            owner.getManager().deleteCategory(Category("$parent/$name", parent))
+                            owner.updateList()
                             true
                         }
                         else -> false

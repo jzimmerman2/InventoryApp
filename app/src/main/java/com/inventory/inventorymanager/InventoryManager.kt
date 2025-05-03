@@ -71,6 +71,15 @@ class InventoryManager(context: Context) {
         insertItems(newItems)
     }
 
+    fun moveItem(item : Item, newDir: String) {
+        insertItem(Item(item.name, newDir, item.quantity, item.isPacked))
+        deleteItem(item)
+    }
+
+    fun moveItems(items : List<Item>, newDir: String) {
+        for (item in items) moveItem(item, newDir)
+    }
+
     //-----------CATEGORIES-----------------
     fun getAllCategories() : List<Category> {
         return dataAccess.getAllCategories()
@@ -106,16 +115,41 @@ class InventoryManager(context: Context) {
     }
 
     fun deleteCategory(category: Category) {
+        val everythingInCategory: List<InventoryData> = getEverythingInCategory(category.name)
+        for (data in everythingInCategory) {
+            when (data) {
+                is Item -> dataAccess.deleteItem(data)
+                is Category -> dataAccess.deleteCategory(data)
+            }
+        }
         dataAccess.deleteCategory(category)
     }
 
     fun deleteCategories(categories: List<Category>) {
-        for (category in categories) dataAccess.deleteCategory(category)
+        for (category in categories) deleteCategory(category)
     }
 
     fun DELETEALLCATEGORIES() {
         val categories = dataAccess.getAllCategories()
         deleteCategories(categories)
+    }
+
+    fun moveCategory(category: Category, newDir: String) {
+        //check that we're not moving category into itself
+        if (newDir.contains(category.name)) return
+
+        //move category
+        insertCategory(Category("$newDir/${category.getShortName()}", newDir))
+
+        val itemsInCategory : List<Item> = searchItemsByCategoryNonRecursive(category.name)
+        moveItems(itemsInCategory, "$newDir/${category.getShortName()}")
+
+        val subCategories : List<Category> = getSubCategories(category.name)
+        for (subCat in subCategories) {
+            moveCategory(subCat, "$newDir/${category.getShortName()}")
+        }
+
+        deleteCategory(category)
     }
 
     //--------------CATEGORIES AND ITEMS---------------
@@ -125,6 +159,26 @@ class InventoryManager(context: Context) {
 
         return categories + items as List<InventoryData>
     }
+
+    fun deleteData(data: InventoryData) {
+        when (data) {
+            is Item -> deleteItem(data)
+            is Category -> deleteCategory(data)
+        }
+    }
+
+    fun deleteDatas(datas : List<InventoryData>) {
+        for (data in datas) deleteData(data)
+    }
+
+    fun moveData(data : InventoryData, newDir: String) {
+        when (data) {
+            is Item -> moveItem(data, newDir)
+            is Category -> moveCategory(data, newDir)
+        }
+    }
+
+
 }
 
 
