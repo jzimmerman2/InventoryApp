@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.inventory.inventorymanager.data.Category
+import com.inventory.inventorymanager.data.InventoryData
 import com.inventory.inventorymanager.data.Item
 
 @Dao
@@ -22,6 +23,9 @@ interface InventoryDbDao {
 
     @Query("SELECT * FROM items WHERE name LIKE :name")
     fun searchItemsByName(name: String): List<Item>
+
+    @Query("SELECT * FROM items WHERE category = :category AND name LIKE :name")
+    fun searchItemsByNameInCategory(name : String, category : String) : List<Item>
 
     @Query("UPDATE items " +
             "SET isPacked = NOT isPacked " +
@@ -44,6 +48,9 @@ interface InventoryDbDao {
     @Query("SELECT * FROM categories WHERE parent = :rootOfSearch")
     fun getSubCategories(rootOfSearch: String): List<Category>
 
+    @Query("SELECT * FROM categories WHERE parent = :category AND name LIKE :name")
+    fun searchCategoriesByNameInCategory(name : String, category: String) : List<Category>
+
     @Query("SELECT * FROM categories WHERE name IN (SELECT parent FROM categories WHERE name = :category)")
     fun getParent(category: String) : List<Category>
 
@@ -55,4 +62,6 @@ interface InventoryDbDao {
 
     @Delete
     fun deleteCategory(category: Category)
+
+    //-------ITEMS AND CATEGORIES---------
 }

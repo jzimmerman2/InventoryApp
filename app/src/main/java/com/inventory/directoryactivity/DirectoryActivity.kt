@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.PopupMenu
+import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -33,6 +34,7 @@ class DirectoryActivity : ComponentActivity() {
 
     private lateinit var addItemButton: Button
     private lateinit var addCatButton: Button
+    private lateinit var categorySearch : SearchView
 
     private lateinit var categoryText: TextView
 
@@ -50,6 +52,7 @@ class DirectoryActivity : ComponentActivity() {
         addItemButton = setUpAddItemButton(findViewById<Button>(R.id.CategoryAddItemButton))
         addCatButton = setUpAddCategoryButton(findViewById<Button>(R.id.CategoryAddCategoryButton))
         categoryText = setUpCategoryText(findViewById<TextView>(R.id.CategoryText))
+        categorySearch = setUpSearchBar(findViewById<SearchView>(R.id.CategorySearch), inventoryListAdapter, inventoryManager)
     }
 
     fun deleteData(data : InventoryData) {
@@ -74,6 +77,47 @@ class DirectoryActivity : ComponentActivity() {
 
     fun getSavedItem() : Item {
         return savedItem
+    }
+
+    /*
+    fun setUpSearchBar(searchBar: SearchView, inventoryListAdapter: InventoryListAdapter, manager : InventoryManager) : SearchView {
+
+        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null) {
+                    val results = manager.searchByName(query)
+                    inventoryListAdapter.updateItems(results)
+                    return true
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(query: String?): Boolean {
+                return false
+            }
+        })
+
+        return searchBar
+    }
+     */
+
+    fun setUpSearchBar(searchBar: SearchView, inventoryListAdapter: DirectoryListAdapter, manager: InventoryManager) : SearchView {
+        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null) {
+                    val results = manager.searchDataByNameInCategory(query, currentDirectory.pathToString())
+                    inventoryListAdapter.updateList(results)
+                    return true
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                return false
+            }
+        })
+
+        return searchBar
     }
 
     fun setUpCategoryText(catText: TextView) : TextView {

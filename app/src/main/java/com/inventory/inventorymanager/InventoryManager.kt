@@ -125,6 +125,13 @@ class InventoryManager(context: Context) {
 
         return categories + items as List<InventoryData>
     }
+
+    fun searchDataByNameInCategory(name: String, curDir : String) : List<InventoryData> {
+        val items : List<Item> = dataAccess.searchItemsByNameInCategory("%$name%", curDir)
+        val categories : List<Category> = dataAccess.searchCategoriesByNameInCategory("%$name%", curDir)
+
+        return categories + items as List<InventoryData>
+    }
 }
 
 
