@@ -36,6 +36,10 @@ class InventoryManager(context: Context) {
         return dataAccess.searchItemsByName("%$name%")
     }
 
+    fun searchItemsByNameInCategory(name: String, category: String) : List<Item> {
+        return dataAccess.searchItemsByNameInCategory("%$name%", category)
+    }
+
     fun flipIsPacked(name: String, category: String) {
         dataAccess.flipIsPacked(name, category)
     }
@@ -100,6 +104,10 @@ class InventoryManager(context: Context) {
         subCategories.addAll(subCategoriesRecursive)
 
         return subCategories
+    }
+
+    fun searchCategoriesByNameInCategory(name : String, category: String) : List<Category> {
+        return dataAccess.searchCategoriesByNameInCategory("%$name%", category)
     }
 
     fun getCategoryParent(category: String) : List<Category> {
@@ -178,7 +186,12 @@ class InventoryManager(context: Context) {
         }
     }
 
+    fun searchDataByNameInCategory(name : String, category: String) : List<InventoryData> {
+        val items : List<Item> = searchItemsByNameInCategory(name, category)
+        val categories : List<Category> = searchCategoriesByNameInCategory(name, category)
 
+        return categories + items as List<InventoryData>
+    }
 }
 
 
