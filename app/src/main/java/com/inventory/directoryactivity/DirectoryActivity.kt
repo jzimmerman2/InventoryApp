@@ -52,12 +52,8 @@ class DirectoryActivity : ComponentActivity() {
         categoryText = setUpCategoryText(findViewById<TextView>(R.id.CategoryText))
     }
 
-    fun deleteData(data : InventoryData) {
-        when (data) {
-            is Item -> inventoryManager.deleteItem(data)
-            is Category -> inventoryManager.deleteCategory(data)
-        }
-        updateList(inventoryListAdapter)
+    fun getManager() : InventoryManager {
+        return inventoryManager
     }
 
     fun setCutData(data : InventoryData) {
@@ -93,19 +89,8 @@ class DirectoryActivity : ComponentActivity() {
                     R.id.paste -> {
                         val data = getCutData()
                         if (data != null){
-                            when (data) {
-                                is Item -> {
-                                    inventoryManager.insertItem(Item(data.name, currentDirectory.pathToString(), data.quantity))
-                                    inventoryManager.deleteItem(data)
-                                    updateList(inventoryListAdapter)
-                                }
-                                is Category -> {
-                                    inventoryManager.insertCategory(Category("${currentDirectory.pathToString()}/${data.getShortName()}", currentDirectory.pathToString()))
-                                    inventoryManager.deleteCategory(data)
-                                    Toast.makeText(this, "name: ${data.name} | parent: ${data.parent}", Toast.LENGTH_SHORT).show()
-                                    updateList(inventoryListAdapter)
-                                }
-                            }
+                            inventoryManager.moveData(data, currentDirectory.pathToString())
+                            updateList()
                         }
                         true
                     }
@@ -138,6 +123,11 @@ class DirectoryActivity : ComponentActivity() {
     fun updateList(adapter: DirectoryListAdapter) {
         val updatedList = inventoryManager.getEverythingInCategory(currentDirectory.pathToString())
         adapter.updateList(updatedList)
+    }
+
+    fun updateList() {
+        val updatedList = inventoryManager.getEverythingInCategory(currentDirectory.pathToString())
+        inventoryListAdapter.updateList(updatedList)
     }
 
     fun setUpAddItemButton(addItemButton: Button): Button {
