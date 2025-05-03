@@ -135,6 +135,10 @@ class InventoryManager(context: Context) {
     }
 
     fun moveCategory(category: Category, newDir: String) {
+        //check that we're not moving category into itself
+        if (newDir.contains(category.name)) return
+
+        //move category
         insertCategory(Category("$newDir/${category.getShortName()}", newDir))
 
         val itemsInCategory : List<Item> = searchItemsByCategoryNonRecursive(category.name)
