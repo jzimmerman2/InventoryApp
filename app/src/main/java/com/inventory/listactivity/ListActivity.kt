@@ -25,6 +25,7 @@ class ListActivity : ComponentActivity() {
     //UTILITIES
     private lateinit var manager: InventoryManager
     private lateinit var adapter: InventoryListAdapter
+    private lateinit var filters: ItemSearchFilter
 
     //MASTER VIEW
     private lateinit var viewSwitcher: ViewSwitcher
@@ -42,14 +43,6 @@ class ListActivity : ComponentActivity() {
     private lateinit var categoryRecurseBox : CheckBox
     private lateinit var setFilterButton : Button
 
-    //DATACLASS
-    data class SearchFilters(
-        var isPacked : Boolean = false,
-        var isNotPacked : Boolean = false,
-        var categoryEntry : String? = null,
-        var categoryRecurse : Boolean = false
-    )
-    private lateinit var filters : SearchFilters
 
     //COMPONENT ACTIVITY OVERRIDES
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +54,7 @@ class ListActivity : ComponentActivity() {
         //set up utilities
         manager = InventoryManager(applicationContext)
         adapter = setUpAdapter(manager)
-        filters = SearchFilters()
+        filters = ItemSearchFilter(manager)
 
         //set up master view
         viewSwitcher = findViewById<ViewSwitcher>(R.id.ListViewSwitcher)
@@ -88,7 +81,7 @@ class ListActivity : ComponentActivity() {
     //DATA MANAGEMENT
 
     fun updateList(adapter: InventoryListAdapter, manager: InventoryManager) {
-        val newItems = manager.getAllItems()
+        val newItems = filters.noQueryAllFilters()
         adapter.updateItems(newItems)
     }
 
@@ -112,46 +105,19 @@ class ListActivity : ComponentActivity() {
     fun setUpSearchBar(searchBar : SearchView, adapter: InventoryListAdapter, manager: InventoryManager) : SearchView {
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query != null) {
-                    var catFilter : String
-                    var results : List<Item>
-                    if (filters.categoryEntry != null && filters.categoryEntry != "") {
-                        catFilter = filters.categoryEntry.toString()
-                        results = if (filters.categoryRecurse) {
-                            manager.searchItemsByNameInCategoryRecursive(query, catFilter)
-                        } else {
-                            manager.searchItemsByNameInCategory(query, catFilter)
-                        }
-                    }
-                    else {
-                        results = manager.searchByName(query)
-                    }
-
-                    //set up results for filtering
-                    var mutableResults = results.toMutableList()
-
-                    //filter by isPacked
-                    if (filters.isPacked) {
-                        for (result in results) {
-                            if (!result.isPacked) {
-                                mutableResults.remove(result)
-                            }
-                        }
-                    }
-                    results = mutableResults.toList()
-
-                    //filter by isNotPacked
-                    if (filters.isNotPacked) {
-                        for (result in results) {
-                            if(result.isPacked) {
-                                mutableResults.remove(result)
-                            }
-                        }
-                    }
-                    results = mutableResults.toList()
+                if (query != null && query != "") {
+                    //val results = filterResultsByIsPacked(filterResultsByIsNotPacked(filterQueryByCategory(query)))
+                    val results = filters.filterQueryByCategory(query)
 
                     //update items
                     adapter.updateItems(results)
+                    return true
+                }
+                else {
+                    //val results = filterResultsByIsPacked(filterResultsByIsNotPacked(manager.getAllItems()))
+                    val results = filters.noQueryAllFilters()
+                    adapter.updateItems(results)
+                    //updateList(adapter, manager)
                     return true
                 }
                 return false
@@ -159,8 +125,10 @@ class ListActivity : ComponentActivity() {
 
             override fun onQueryTextChange(query: String?): Boolean {
                 if (query != null && query == "") {
-                    val results = manager.getAllItems()
+                    //val results = manager.getAllItems()
+                    val results = filters.noQueryAllFilters()
                     adapter.updateItems(results)
+                    //updateList(adapter, manager)
                     return true
                 }
                 return false
@@ -193,7 +161,7 @@ class ListActivity : ComponentActivity() {
 
     fun setUpIsPackedBox(isPackedBox : CheckBox) : CheckBox {
         isPackedBox.setOnClickListener {
-            filters.isPacked = !filters.isPacked
+            filters.filters.setIsPacked(!filters.filters.getIsPacked())
         }
         return isPackedBox
     }
@@ -202,7 +170,7 @@ class ListActivity : ComponentActivity() {
 
     fun setUpIsNotPackedBox(isNotPackedBox : CheckBox) : CheckBox {
         isNotPackedBox.setOnClickListener {
-            filters.isNotPacked = !filters.isNotPacked
+            filters.filters.setIsPacked(!filters.filters.getIsPacked())
         }
         return isNotPackedBox
     }
@@ -210,7 +178,7 @@ class ListActivity : ComponentActivity() {
 
     fun setUpCategoryRecurse(categoryRecurseBox : CheckBox) : CheckBox {
         categoryRecurseBox.setOnClickListener {
-            filters.categoryRecurse = !filters.categoryRecurse
+            filters.filters.setCategoryRecurse(!filters.filters.getCategoryRecurse())
         }
         return categoryRecurseBox
     }
@@ -219,7 +187,10 @@ class ListActivity : ComponentActivity() {
 
     fun setUpSetFilterButton(setFilter : Button) : Button {
         setFilter.setOnClickListener {
-            filters.categoryEntry = categoryFilterEntry.text.toString()
+            filters.filters.setCategoryEntry(categoryFilterEntry.text.toString())
+            //val results = filters.noQueryAllFilters()
+            //adapter.updateItems(results)
+            updateList(adapter, manager)
             viewSwitcher.showPrevious()
         }
         return setFilter
