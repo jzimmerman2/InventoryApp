@@ -17,6 +17,7 @@ import com.inventory.directoryactivity.DirectoryActivity
 import com.inventory.listactivity.ListActivity
 import com.inventory.R
 import com.inventory.inventorymanager.InventoryManager
+import com.inventory.testactivity.TestActivity
 
 //Description: Entrypoint for application. Displays main layout. Sets click handlers for buttons
 //              in main layout.
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
 
     fun setUpListButton(listButton: Button) : Button {
         listButton.setOnClickListener {
+            //val toOpenList = Intent(this, ListActivity::class.java)
             val toOpenList = Intent(this, ListActivity::class.java)
             startActivity(toOpenList)
         }

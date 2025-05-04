@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/inventory_layout"
+    android:id="@+id/inventory_layout1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/ListTitle"
+        android:id="@+id/ListTitle1"
         android:layout_width="match_parent"
         android:layout_height="46dp"
         android:text="List View"
@@ -15,19 +15,33 @@
         android:textSize="34sp"
         android:textStyle="bold" />
 
-    <SearchView
-        android:id="@+id/SearchBar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <SearchView
+            android:id="@+id/SearchBar1"
+            android:layout_height="wrap_content"
+            android:layout_weight="4">
+
+        </SearchView>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button" />
+    </LinearLayout>
 
     <Button
-        android:id="@+id/AddItemListButton"
+        android:id="@+id/AddItemListButton1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add Item" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/InventoryList"
+        android:id="@+id/InventoryList1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

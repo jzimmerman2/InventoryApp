@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ListSearchFilterView1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/ListSearchFilterTitle1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search Filters"
+        android:textSize="34sp" />
+
+    <CheckBox
+        android:id="@+id/IsPackedBox1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Is Packed?" />
+
+    <CheckBox
+        android:id="@+id/IsNotPackedBox1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Is Not Packed?" />
+
+    <LinearLayout
+        android:id="@+id/ListSearchCategoryFilterLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/ListSearchCategoryFilterTitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Category:" />
+
+        <EditText
+            android:id="@+id/ListSearchCategoryFilterEntry1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="text" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/ListSearchSetFilterButton1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Set Filters" />
+</LinearLayout>
