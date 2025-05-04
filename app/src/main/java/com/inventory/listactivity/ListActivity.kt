@@ -3,7 +3,10 @@ package com.inventory.listactivity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.SearchView
+import android.widget.ViewSwitcher
 import androidx.activity.ComponentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,58 +22,147 @@ import com.inventory.inventorymanager.data.Item
 //Resources: res/layout/inventory_list_layout
 class ListActivity : ComponentActivity() {
 
-    private lateinit var inventoryManager: InventoryManager
-    private lateinit var inventoryListAdapter: InventoryListAdapter
-    private lateinit var inventoryList : RecyclerView
+    //UTILITIES
+    private lateinit var manager: InventoryManager
+    private lateinit var adapter: InventoryListAdapter
+
+    //MASTER VIEW
+    private lateinit var viewSwitcher: ViewSwitcher
+
+    //INVENTORY LIST LAYOUT
+    private lateinit var list : RecyclerView
     private lateinit var searchBar : SearchView
     private lateinit var addItemFromListButton : Button
+    private lateinit var addFilterButton : Button
 
+    //SEARCH FILTERS LAYOUT
+    private lateinit var isPackedBox : CheckBox
+    private lateinit var isNotPackedBox : CheckBox
+    private lateinit var categoryFilterEntry : EditText
+    private lateinit var categoryRecurseBox : CheckBox
+    private lateinit var setFilterButton : Button
+
+    //DATACLASS
+    data class SearchFilters(
+        var isPacked : Boolean = false,
+        var isNotPacked : Boolean = false,
+        var categoryEntry : String? = null,
+        var categoryRecurse : Boolean = false
+    )
+    private lateinit var filters : SearchFilters
+
+    //COMPONENT ACTIVITY OVERRIDES
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         //display inventory_list_layout
-        setContentView(R.layout.inventory_list_layout)
+        setContentView(R.layout.list_activity_view_switcher)
 
-        inventoryManager = InventoryManager(applicationContext)
+        //set up utilities
+        manager = InventoryManager(applicationContext)
+        adapter = setUpAdapter(manager)
+        filters = SearchFilters()
 
-        inventoryListAdapter = setUpAdapter(inventoryManager)
-        inventoryList = setUpInventoryList(findViewById<RecyclerView>(R.id.InventoryList),
-            inventoryListAdapter)
+        //set up master view
+        viewSwitcher = findViewById<ViewSwitcher>(R.id.ListViewSwitcher)
 
-        addItemFromListButton = setUpAddItemListButton(findViewById<Button>(R.id.AddItemListButton))
+        //set up list layout
+        list = setUpInventoryList(findViewById<RecyclerView>(R.id.InventoryList), adapter)
+        searchBar = setUpSearchBar(findViewById<SearchView>(R.id.ListActivitySearchBar), adapter, manager)
+        addItemFromListButton = setUpAddItemButton(findViewById<Button>(R.id.AddItemListButton))
+        addFilterButton = setUpAddFilterButton(findViewById<Button>(R.id.ListActivityAddFilterButton))
 
-        searchBar = setUpSearchBar(findViewById<SearchView>(R.id.SearchBar), inventoryListAdapter,
-            inventoryManager)
+        //set up filters layout
+        isPackedBox = setUpIsPackedBox(findViewById<CheckBox>(R.id.IsPackedBox))
+        isNotPackedBox = setUpIsNotPackedBox(findViewById<CheckBox>(R.id.IsNotPackedBox))
+        categoryRecurseBox = setUpCategoryRecurse(findViewById<CheckBox>(R.id.CategoryRecurseBox))
+        categoryFilterEntry = findViewById<EditText>(R.id.ListSearchCategoryFilterEntry)
+        setFilterButton = setUpSetFilterButton(findViewById<Button>(R.id.ListSearchSetFilterButton))
     }
 
     override fun onResume() {
         super.onResume()
-        inventoryListAdapter = updateInventoryList(inventoryListAdapter, inventoryManager)
+        updateList(adapter, manager)
     }
 
-    fun setUpAddItemListButton(addItemListButton: Button) : Button {
-        addItemListButton.setOnClickListener {
-            val toOpenList = Intent(this, AddItemActivity::class.java)
-            toOpenList.putExtra("from", "list activity")
-            toOpenList.putExtra("current directory", "/")
-            startActivity(toOpenList)
-        }
-        return addItemListButton
+    //DATA MANAGEMENT
+
+    fun updateList(adapter: InventoryListAdapter, manager: InventoryManager) {
+        val newItems = manager.getAllItems()
+        adapter.updateItems(newItems)
     }
 
-    fun setUpSearchBar(searchBar: SearchView, inventoryListAdapter: InventoryListAdapter, manager : InventoryManager) : SearchView {
 
+    //SET UP UTILITIES
+    fun setUpAdapter(manager : InventoryManager) : InventoryListAdapter {
+        val items = manager.getAllItems()
+        return InventoryListAdapter(items)
+    }
+
+    //SET UP LIST LAYOUT
+
+    fun setUpInventoryList(listView : RecyclerView, adapter : InventoryListAdapter) : RecyclerView {
+        listView.layoutManager = LinearLayoutManager(this)
+        listView.adapter = adapter
+        return listView
+    }
+
+
+
+    fun setUpSearchBar(searchBar : SearchView, adapter: InventoryListAdapter, manager: InventoryManager) : SearchView {
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
-                    val results = manager.searchByName(query)
-                    inventoryListAdapter.updateItems(results)
+                    var catFilter : String
+                    var results : List<Item>
+                    if (filters.categoryEntry != null && filters.categoryEntry != "") {
+                        catFilter = filters.categoryEntry.toString()
+                        results = if (filters.categoryRecurse) {
+                            manager.searchItemsByNameInCategoryRecursive(query, catFilter)
+                        } else {
+                            manager.searchItemsByNameInCategory(query, catFilter)
+                        }
+                    }
+                    else {
+                        results = manager.searchByName(query)
+                    }
+
+                    //set up results for filtering
+                    var mutableResults = results.toMutableList()
+
+                    //filter by isPacked
+                    if (filters.isPacked) {
+                        for (result in results) {
+                            if (!result.isPacked) {
+                                mutableResults.remove(result)
+                            }
+                        }
+                    }
+                    results = mutableResults.toList()
+
+                    //filter by isNotPacked
+                    if (filters.isNotPacked) {
+                        for (result in results) {
+                            if(result.isPacked) {
+                                mutableResults.remove(result)
+                            }
+                        }
+                    }
+                    results = mutableResults.toList()
+
+                    //update items
+                    adapter.updateItems(results)
                     return true
                 }
                 return false
             }
 
             override fun onQueryTextChange(query: String?): Boolean {
+                if (query != null && query == "") {
+                    val results = manager.getAllItems()
+                    adapter.updateItems(results)
+                    return true
+                }
                 return false
             }
         })
@@ -78,20 +170,60 @@ class ListActivity : ComponentActivity() {
         return searchBar
     }
 
-    fun updateInventoryList(inventoryListAdapter: InventoryListAdapter, manager: InventoryManager) : InventoryListAdapter {
-        val newItems = manager.getAllItems()
-        inventoryListAdapter.updateItems(newItems)
-        return inventoryListAdapter
+
+    fun setUpAddFilterButton(addFilter : Button) : Button {
+        addFilter.setOnClickListener {
+            viewSwitcher.showNext()
+        }
+        return addFilter
     }
 
-    fun setUpAdapter(manager: InventoryManager) : InventoryListAdapter {
-        val items = manager.getAllItems()
-        return InventoryListAdapter(items)
+
+    fun setUpAddItemButton(addItem : Button) : Button {
+        addItem.setOnClickListener {
+            val toOpenList = Intent(this, AddItemActivity::class.java)
+            toOpenList.putExtra("from", "list activity")
+            toOpenList.putExtra("current directory", "/")
+            startActivity(toOpenList)
+        }
+        return addItem
     }
 
-    fun setUpInventoryList(inventoryList : RecyclerView, inventoryListAdapter: InventoryListAdapter) : RecyclerView {
-        inventoryList.layoutManager = LinearLayoutManager(this)
-        inventoryList.adapter = inventoryListAdapter
-        return inventoryList
+    //SET UP FILTERS LAYOUT
+
+    fun setUpIsPackedBox(isPackedBox : CheckBox) : CheckBox {
+        isPackedBox.setOnClickListener {
+            filters.isPacked = !filters.isPacked
+        }
+        return isPackedBox
     }
+
+
+
+    fun setUpIsNotPackedBox(isNotPackedBox : CheckBox) : CheckBox {
+        isNotPackedBox.setOnClickListener {
+            filters.isNotPacked = !filters.isNotPacked
+        }
+        return isNotPackedBox
+    }
+
+
+    fun setUpCategoryRecurse(categoryRecurseBox : CheckBox) : CheckBox {
+        categoryRecurseBox.setOnClickListener {
+            filters.categoryRecurse = !filters.categoryRecurse
+        }
+        return categoryRecurseBox
+    }
+
+
+
+    fun setUpSetFilterButton(setFilter : Button) : Button {
+        setFilter.setOnClickListener {
+            filters.categoryEntry = categoryFilterEntry.text.toString()
+            viewSwitcher.showPrevious()
+        }
+        return setFilter
+    }
+
+
 }

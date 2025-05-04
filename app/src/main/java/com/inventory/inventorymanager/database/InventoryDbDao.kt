@@ -26,6 +26,9 @@ interface InventoryDbDao {
     @Query("SELECT * FROM items WHERE category = :category AND name LIKE :name")
     fun searchItemsByNameInCategory(name : String, category: String) : List<Item>
 
+    @Query("SELECT * FROM items WHERE category LIKE :category AND name LIKE :name")
+    fun searchItemsByNameInCategoryRecursive(name: String, category: String) : List<Item>
+
     @Query("UPDATE items " +
             "SET isPacked = NOT isPacked " +
             "WHERE name = :name AND category = :category")
