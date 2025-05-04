@@ -29,7 +29,15 @@ class InventoryManager(context: Context) {
     }
 
     fun searchItemsByCategoryRecursive(category: String) : List<Item> {
-        return dataAccess.searchItemsByCategoryRecursive("$category%")
+        val parent : String = "/${category.substringBeforeLast("/")}"
+        val catShortName : String = category.substringAfterLast("/")
+
+        //var resultsInCategory : List<Item> = dataAccess.searchItemsByNameInCategory("%$name%", "$parent/$catShortName")
+        //var resultsInSubCategories : List<Item> = dataAccess.searchItemsByNameInCategoryRecursive("%$name%", "$parent/$catShortName/%")
+        var resultsInCategory : List<Item> = dataAccess.searchItemsByCategoryNonRecursive(category)
+        var resultsInSubCategories : List<Item> = dataAccess.searchItemsByCategoryRecursive("$category/%")
+
+        return resultsInCategory + resultsInSubCategories
     }
 
     fun searchByName(name: String) : List<Item> {
