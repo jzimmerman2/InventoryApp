@@ -40,6 +40,18 @@ class InventoryManager(context: Context) {
         return dataAccess.searchItemsByNameInCategory("%$name%", category)
     }
 
+    fun searchItemsByNameInCategoryRecursive(name: String, category: String) : List<Item> {
+        val parent : String = "/${category.substringBeforeLast("/")}"
+        val catShortName : String = category.substringAfterLast("/")
+
+        //var resultsInCategory : List<Item> = dataAccess.searchItemsByNameInCategory("%$name%", "$parent/$catShortName")
+        //var resultsInSubCategories : List<Item> = dataAccess.searchItemsByNameInCategoryRecursive("%$name%", "$parent/$catShortName/%")
+        var resultsInCategory : List<Item> = dataAccess.searchItemsByNameInCategory("%$name%", category)
+        var resultsInSubCategories : List<Item> = dataAccess.searchItemsByNameInCategoryRecursive("%$name%", "$category/%")
+
+        return resultsInCategory + resultsInSubCategories
+    }
+
     fun flipIsPacked(name: String, category: String) {
         dataAccess.flipIsPacked(name, category)
     }
